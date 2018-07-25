@@ -1,0 +1,27 @@
+{
+  "sprite/ace.plist": {
+    "png": "sprite/ace.png",
+    "spriteName": [ "Ace1.png", "Crocodile1.png" ],
+    "spriteBack": [ "AceB1.png", "CrocodileB1.png" ]
+  },
+  "sprite/luffy.plist": {
+    "png": "sprite/luffy1.png",
+    "spriteName": [ "Luffy.png", "Sabo1.png" ],
+    "spriteBack": [ "LuffyB1.png", "SaboB1.png" ]
+  },
+  "sprite/Nami.plist": {
+    "png": "sprite/Nami.png",
+    "spriteName": [ "Nima1.png", "Nima2.png" ],
+    "spriteBack": [ "NimaB1.png", "NimaB2.png" ]
+  },
+  "sprite/robin.plist": {
+    "png": "sprite/robin.png",
+    "spriteName": [ "Hancock1.png", "Robin1.png" ],
+    "spriteBack": [ "HancockB1.png", "RobinB1.png" ]
+  },
+  "sprite/sanji.plist": {
+    "png": "sprite/sanji.png",
+    "spriteName": [ "Monet1.png", "Sanji1.png" ],
+    "spriteBack": [ "MonetB1.png", "SanjiB1.png" ]
+  }
+}
