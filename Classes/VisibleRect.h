@@ -7,7 +7,6 @@ class VisibleRect
 {
 public:
     static cocos2d::Rect getVisibleRect();
-
     static cocos2d::Vec2 left();
     static cocos2d::Vec2 right();
     static cocos2d::Vec2 top();
@@ -17,6 +16,8 @@ public:
     static cocos2d::Vec2 rightTop();
     static cocos2d::Vec2 leftBottom();
     static cocos2d::Vec2 rightBottom();
+	static cocos2d::Rect Rect12ByIndex(int index);//12的阵列
+	static cocos2d::Rect BottomByIndex(int sum, int index);  //将底部分为sum份,index表示放在第几个位置
 private:
     static void lazyInit();
     static cocos2d::Rect s_visibleRect;

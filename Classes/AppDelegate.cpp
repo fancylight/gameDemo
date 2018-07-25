@@ -22,13 +22,12 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#include <Sence/MySence.h>
-#include <Sence/shopSence.h>
+
 #include "AppDelegate.h"
-#include "HelloWorldScene.h"
-#include <iostream>
 #include "Util.h"
-#include "proj.win32/UserData.h"
+#include "Data/UserData.h"
+#include "Sence/MenuSence.h"
+
 
 // #define USE_AUDIO_ENGINE 1
 // #define USE_SIMPLE_AUDIO_ENGINE 1
@@ -45,9 +44,9 @@ using namespace cocos2d::experimental;
 using namespace CocosDenshion;
 #endif
 USING_NS_CC;
-#define DEBUG 1;
-
-static cocos2d::Size designResolutionSize = cocos2d::Size(1300, 600);
+#define DEBUG 1
+#define BASE_RESOLUTION 500
+static cocos2d::Size designResolutionSize = cocos2d::Size(BASE_RESOLUTION, 2* BASE_RESOLUTION);
 static cocos2d::Size smallResolutionSize = cocos2d::Size(480, 320);
 static cocos2d::Size mediumResolutionSize = cocos2d::Size(1024, 768);
 static cocos2d::Size largeResolutionSize = cocos2d::Size(2048, 1536);
@@ -124,7 +123,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     //初始化数据
     // create a scene. it's an autorelease object
     initData();	
-    auto scene = ShopSence::create();
+    auto scene = MenuSence::create();
     // run
     director->runWithScene(scene);
     //进行场景加载..数据加载
@@ -164,7 +163,7 @@ void AppDelegate::applicationWillEnterForeground() {
  */
 void AppDelegate::initData() {
     auto spriteCache=SpriteFrameCache::getInstance();
-	auto vec=getAllSpriteData();
+	auto vec= Util::getAllSpriteData();
 	for(plistData data:vec)
 	{
 		spriteCache->addSpriteFramesWithFile(data.plist, data.png);
@@ -176,7 +175,6 @@ void AppDelegate::initData() {
 		{
 			UserData::getInstance()->spriteBack.push_back(sp);
 		}
-		
 	}
 
 }

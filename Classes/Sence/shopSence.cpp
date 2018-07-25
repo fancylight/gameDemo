@@ -10,16 +10,16 @@
 #include <cocos/2d/CCNode.h>
 #include "../Sprite/MySprite.h"
 #include "Util.h"
-#include "proj.win32/UserData.h"
+#include "Data/UserData.h"
 USING_NS_CC;
 
 //  1.初次创建精灵并且添加缓存中
 bool ShopSence::init() {
-    auto back = Sprite::create("background/shop.jpg");
-    //首先拉伸或者缩放背景
-	auto scale= getScaleVisiableSize(back->getContentSize());
-	back->setScale(scale.x, scale.y);
-    back->setPosition(VisibleRect::center());
+ //    auto back = Sprite::create("background/shop.jpg");
+ //    //首先拉伸或者缩放背景	
+	// Util::setScaleVisiableSize(back);
+ //    back->setPosition(VisibleRect::center());
+	Util::setBackGround("background/shop.jpg", this);
 	//初始化精灵
 	mySprite = MySprite::create();
 	mySprite->setPosition(VisibleRect::center());
@@ -30,7 +30,6 @@ bool ShopSence::init() {
 	auto menu=Menu::create(item, nullptr);
 	menu->setPosition(Vec2::ZERO);
     addChild(menu,1,"randomMenu");
-    addChild(back,0,"back");
 	addChild(mySprite, 1);
     return true;
 }
@@ -50,12 +49,17 @@ bool ShopSence::randomCharacter(Ref *pSender) {
         if(frame&&mySprite)
         {
 			mySprite->initWithSpriteFrame(frame);
-			auto size = getScaleRatio(0.25, 0.7, mySprite->getContentSize());
-			mySprite->setScale(size.x,size.y);
+			Util::setScaleRatio(0.25, 0.5, mySprite->getContentSize(), mySprite);
+			// Util::get12RectByIndex(11, mySprite);
+			// std::cout << "x: " << mySprite->getPosition().x;
+			// std::cout << "y: " << mySprite->getPosition().y;
 			mySprite->runAction(ScaleTo::create(1, 0.5));
         }
-        else
-            std::cout<<"frame is invalid";
+        else if(frame==NULL)
+        {
+			std::cout << name<<"  frame is invalid";
+			
+        }
     }
     return false;
 }
@@ -66,6 +70,6 @@ bool ShopSence::randomCharacter(Ref *pSender) {
  */
 std::string ShopSence::randonName() {
     //暂时返回一个确定的
-	int index = getRandom(UserData::getInstance()->spriteNoBack.size());
+	int index = Util::getRandom(UserData::getInstance()->spriteNoBack.size());
 	return UserData::getInstance()->spriteNoBack[index];
 }

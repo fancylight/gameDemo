@@ -5,8 +5,8 @@
     "spriteBack": [ "AceB1.png", "CrocodileB1.png" ]
   },
   "sprite/luffy.plist": {
-    "png": "sprite/luffy1.png",
-    "spriteName": [ "Luffy.png", "Sabo1.png" ],
+    "png": "sprite/luffy.png",
+    "spriteName": [ "Luffy1.png", "Sabo1.png" ],
     "spriteBack": [ "LuffyB1.png", "SaboB1.png" ]
   },
   "sprite/Nami.plist": {

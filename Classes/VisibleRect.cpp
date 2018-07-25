@@ -1,4 +1,5 @@
 #include "VisibleRect.h"
+#include "Util.h"
 
 /****************************************************************************
  Copyright (c) 2013-2014 Chukong Technologies Inc.
@@ -94,4 +95,71 @@ Vec2 VisibleRect::rightBottom()
 {
     lazyInit();
     return Vec2(s_visibleRect.origin.x+s_visibleRect.size.width, s_visibleRect.origin.y);
+}
+/*
+ *-------------------------
+ *
+ *	__	  __	__
+ * |  |	 |  |  |  |
+ * |9|	 |  |  |  |
+ * |__|  |__|  |__|    左右间距 △width=1/2  卡牌width
+ *
+ *	__	  __	__	   上下间距 △height=1/3 卡牌height
+ * |  |	 |  |  |  |
+ * |6 |	 |  |  |  |
+ * |__|  |__|  |__|	   整体将visualRect分为height/4  或者/3  
+ * 
+ *					   横排对三求余数+1
+ *                     
+ *                     竖排对三求商+1
+ * 
+ * 
+ * 	__	  __	__
+ * |  |	 |  |  |  |
+ * |3 |	 |  |  |  |
+ * |__|  |__|  |__|
+ *
+ *	__	  __	__
+ * |  |	 |  |  |  |
+ * |0 |	 |  |  |  |
+ * |__|  |__|  |__|
+ * 
+ * 
+ * --------------------------
+ *  index 0-11
+ */
+Rect VisibleRect::Rect12ByIndex(int index)
+{
+	lazyInit();
+	int sumHeightNumber = 3;	//表示将屏幕高分为几分
+	int weightScaleToPadding = 2;  //表示卡片是间隔倍数
+	int heightScaleToPadding = 3;  //表示卡片是间隔倍数
+
+	auto visualWidth= s_visibleRect.size.width;
+	auto visualHeight = s_visibleRect.size.height;
+	//先计算缩放比例
+	auto height0 = visualHeight / sumHeightNumber;
+	auto weight0 = visualWidth;
+	auto height1 = height0 / (heightScaleToPadding*2+3);
+	auto weight1 = weight0 /(weightScaleToPadding*3+4) ;
+	cocos2d:Vec2 vecCard(weight1 * 2, height1 * 3);
+	//
+	std::cout << "height0" << " " << height0<<std::endl;
+	std::cout << "weight0" << " " << weight0 << std::endl;
+	std::cout << "height1" << " " << height1 << std::endl;
+	std::cout << "weight1" << " " << weight1 << std::endl;
+	//计算坐标
+	auto x = ((index % 3) + 1)*weight1 + (index % 3)*weight1 * weightScaleToPadding;
+	int temp=index;
+	if (index > 5)
+		temp -= 6;
+	auto y = ((temp / 3) + 1)*height1 + (temp / 3)*height1*heightScaleToPadding;
+	if (index > 5)
+		y += (visualHeight- height0);
+	return Rect(x, y, vecCard.x, vecCard.y);
+}
+
+cocos2d::Rect VisibleRect::BottomByIndex(int sum, int index)
+{
+	lazyInit();
 }

@@ -33,7 +33,8 @@ public:
 private:
     bool animationEnd = false;// true表示当前精灵仍旧进行动画,那么出招栈不会将其弹出,并且battleSense::update() 函数就直接跳过新的动画场景,也不能进行伤害结算
 	spriteData data;
-
+	std::string spriteName; //这个名字是和图像名字相同的
+	int postion; //0-5 表示上场的位置
 public:
 	bool& is_animation_end()
 	{
