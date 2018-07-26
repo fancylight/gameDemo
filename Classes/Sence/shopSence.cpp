@@ -53,13 +53,14 @@ bool ShopSence::randomCharacter(Ref *pSender) {
 			// Util::get12RectByIndex(11, mySprite);
 			// std::cout << "x: " << mySprite->getPosition().x;
 			// std::cout << "y: " << mySprite->getPosition().y;
-			mySprite->runAction(ScaleTo::create(1, 0.5));
+			mySprite->runAction(Sequence::create(ScaleTo::create(1, 0.5),CallFunc::create(CC_CALLBACK_0(ShopSence::setNextBuy,this)),NULL));
         }
         else if(frame==NULL)
         {
 			std::cout << name<<"  frame is invalid";
 			
         }
+		animation = true;
     }
     return false;
 }
@@ -72,4 +73,9 @@ std::string ShopSence::randonName() {
     //暂时返回一个确定的
 	int index = Util::getRandom(UserData::getInstance()->spriteNoBack.size());
 	return UserData::getInstance()->spriteNoBack[index];
+}
+//设置能否进行抽卡
+void ShopSence::setNextBuy()
+{
+	animation = false;
 }

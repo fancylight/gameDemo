@@ -2,8 +2,8 @@
 #include "2d/CCMenuItem.h"
 #include "VisibleRect.h"
 #include "shopSence.h"
-#include "proj.win32/LoadingSence.h"
 #include "Util.h"
+#include "LoadingSence.h"
 
 
 USING_NS_CC;
