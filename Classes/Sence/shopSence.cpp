@@ -15,10 +15,6 @@ USING_NS_CC;
 
 //  1.初次创建精灵并且添加缓存中
 bool ShopSence::init() {
- //    auto back = Sprite::create("background/shop.jpg");
- //    //首先拉伸或者缩放背景	
-	// Util::setScaleVisiableSize(back);
- //    back->setPosition(VisibleRect::center());
 	Util::setBackGround("background/shop.jpg", this);
 	//初始化精灵
 	mySprite = MySprite::create();
@@ -26,7 +22,7 @@ bool ShopSence::init() {
     //创建一个菜单
     auto item= MenuItemImage::create("CloseNormal.png", "CloseSelected.png",
                                      CC_CALLBACK_1(ShopSence::randomCharacter, this));
-    item->setPosition(VisibleRect::right());
+	Util::setNodePostionInScreen(item, 5, Vec2(0, 0), 3, 5, 10);
 	auto menu=Menu::create(item, nullptr);
 	menu->setPosition(Vec2::ZERO);
     addChild(menu,1,"randomMenu");
@@ -50,9 +46,6 @@ bool ShopSence::randomCharacter(Ref *pSender) {
         {
 			mySprite->initWithSpriteFrame(frame);
 			Util::setScaleRatio(0.25, 0.5, mySprite->getContentSize(), mySprite);
-			// Util::get12RectByIndex(11, mySprite);
-			// std::cout << "x: " << mySprite->getPosition().x;
-			// std::cout << "y: " << mySprite->getPosition().y;
 			mySprite->runAction(Sequence::create(ScaleTo::create(1, 0.5),CallFunc::create(CC_CALLBACK_0(ShopSence::setNextBuy,this)),NULL));
         }
         else if(frame==NULL)
@@ -66,7 +59,6 @@ bool ShopSence::randomCharacter(Ref *pSender) {
 }
 
 /**
- * 具体应该根据某张表来实现
  * @return
  */
 std::string ShopSence::randonName() {

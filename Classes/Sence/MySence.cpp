@@ -4,10 +4,3 @@
 
 #include "MySence.h"
 USING_NS_CC;
-bool MySence::init() {
-    return true;
-}
-
-void MySence::update(float delta) {
-    Node::update(delta);
-}

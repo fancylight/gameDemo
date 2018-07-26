@@ -10,8 +10,6 @@
 
 class MySence: public cocos2d::Scene {
 public:
-    bool init() override;
-    virtual void update(float delta);
     CREATE_FUNC(MySence)
 };
 

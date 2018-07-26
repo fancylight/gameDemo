@@ -40,7 +40,7 @@ void LoadingSence::loadBattleData()
 void LoadingSence::loadShop()
 {
 	
-	Director::getInstance()->replaceScene(ShopSence::create());
+	Director::getInstance()->pushScene(ShopSence::create());
 }
 
 

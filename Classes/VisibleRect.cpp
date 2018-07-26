@@ -127,8 +127,10 @@ Vec2 VisibleRect::rightBottom()
  * 
  * --------------------------
  *  index 0-11
+ *  
+ *  这些元素锚点要为 0,0
  */
-Rect VisibleRect::Rect12ByIndex(int index)
+Rect VisibleRect::rect12ByIndex(int index)
 {
 	lazyInit();
 	int sumHeightNumber = 3;	//表示将屏幕高分为几分
@@ -139,27 +141,61 @@ Rect VisibleRect::Rect12ByIndex(int index)
 	auto visualHeight = s_visibleRect.size.height;
 	//先计算缩放比例
 	auto height0 = visualHeight / sumHeightNumber;
-	auto weight0 = visualWidth;
-	auto height1 = height0 / (heightScaleToPadding*2+3);
-	auto weight1 = weight0 /(weightScaleToPadding*3+4) ;
-	cocos2d:Vec2 vecCard(weight1 * 2, height1 * 3);
-	//
-	std::cout << "height0" << " " << height0<<std::endl;
-	std::cout << "weight0" << " " << weight0 << std::endl;
-	std::cout << "height1" << " " << height1 << std::endl;
-	std::cout << "weight1" << " " << weight1 << std::endl;
-	//计算坐标
-	auto x = ((index % 3) + 1)*weight1 + (index % 3)*weight1 * weightScaleToPadding;
-	int temp=index;
+	// auto weight0 = visualWidth;
+	// auto height1 = height0 / (heightScaleToPadding*2+3);
+	// auto weight1 = weight0 /(weightScaleToPadding*3+4) ;
+	// cocos2d:Vec2 vecCard(weight1 * 2, height1 * 3);
+	// //
+	// std::cout << "height0" << " " << height0<<std::endl;
+	// std::cout << "weight0" << " " << weight0 << std::endl;
+	// std::cout << "height1" << " " << height1 << std::endl;
+	// std::cout << "weight1" << " " << weight1 << std::endl;
+	// //计算坐标
+	// auto x = ((index % 3) + 1)*weight1 + (index % 3)*weight1 * weightScaleToPadding;
+	// int temp=index;
+	// if (index > 5)
+	// 	temp -= 6;
+	// auto y = ((temp / 3) + 1)*height1 + (temp / 3)*height1*heightScaleToPadding;
+	// if (index > 5)
+	// 	y += (visualHeight- height0);
+	// return Rect(x, y, vecCard.x, vecCard.y);
+	cocos2d::Vec2 vX = splitBySum(3, index, visualWidth, weightScaleToPadding);
+	cocos2d::Vec2 vY = splitBySum(2, index, height0, heightScaleToPadding);
 	if (index > 5)
-		temp -= 6;
-	auto y = ((temp / 3) + 1)*height1 + (temp / 3)*height1*heightScaleToPadding;
-	if (index > 5)
-		y += (visualHeight- height0);
-	return Rect(x, y, vecCard.x, vecCard.y);
+		vY.x = vY.x + (visualHeight - height0);
+	return Rect(vX.x, vY.x, vX.y, vY.y);
 }
 
-cocos2d::Rect VisibleRect::BottomByIndex(int sum, int index)
+/**
+ *  选定任意长度,将长度分为sum份,index为第几分
+ * 
+ *	@sum 表示要分的范围总数
+ *	@index 表示位置从0开始
+ *	@length 表示要分的大小
+ *	@ScaleToPadding 表示元素:间距
+ */
+cocos2d::Vec2 VisibleRect::splitBySum(int sum, int index, float length, int ScaleToPadding=2)
 {
 	lazyInit();
+	auto visualWidth = length;
+	auto lenth0 = visualWidth / (sum+1+sum* ScaleToPadding);
+	auto postion = ((index%sum) + 1)*lenth0 + (index%sum)*lenth0*ScaleToPadding;
+	return Vec2(postion, lenth0*ScaleToPadding);
+}
+
+/**
+ * 将屏幕分成row*column份
+ *	@row 
+ *	@colum
+ *	@vec 表示元素分解后所在第几个矩形位置
+ *	@weightScaleToPadding 表示元素宽:宽间距 默认为2
+ *	@heightScaleToPadding 表示元素高:高间距 默认为3
+ */
+cocos2d::Rect VisibleRect::splitScreenAsRect(int row, cocos2d::Vec2 vec, int weightScaleToPadding=2,
+	int heightScaleToPadding=3, int column=10)
+{
+	lazyInit();
+	cocos2d::Vec2 vecX = splitBySum(row, vec.x, s_visibleRect.size.width, weightScaleToPadding);
+	cocos2d::Vec2 vecY = splitBySum(column, vec.y, s_visibleRect.size.height, heightScaleToPadding);
+	return cocos2d::Rect(vecX.x, vecY.x, vecX.y, vecY.y);
 }

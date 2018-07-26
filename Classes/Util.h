@@ -9,10 +9,15 @@
 #include "platform/CCFileUtils.h"
 #include <stdlib.h>
 #include "VisibleRect.h"
+#include "marco.h"
+
 
 class Util
 {
 public:
+	//-------------------------------精灵大小位置处理--------------------------------------
+	//如果涉及到调整位置的话,就要把锚点设置为0 0
+
 	/*
 	*  将图片缩放 x y 缩放为屏幕的 sx ,sy倍
 	*	@sX 表示精灵要缩放x比例倍数
@@ -23,35 +28,57 @@ public:
 	*	@height 表示要进行比较的height
 	*/
 
-	static void setScaleRatio(float sX, float sY, cocos2d::Size oSize, cocos2d::Sprite* sprite, float width = cocos2d::Director::getInstance()->getVisibleSize().width, float height = cocos2d::Director::getInstance()->getVisibleSize().height)
+	static void setScaleRatio(float sX, float sY, cocos2d::Size oSize, cocos2d::Node* sprite, float width = cocos2d::Director::getInstance()->getVisibleSize().width, float height = cocos2d::Director::getInstance()->getVisibleSize().height)
 	{
 		auto width0 = width * sX;
 		auto height0 = height * sY;
 		float xScale = width0 / oSize.width;
 		float yScale = height0 / oSize.height;
 		sprite->setScale(xScale, yScale);
-		std::cout << "执行了";
+		RECT_PRINT("精灵缩放后", cocos2d::Rect(sprite->getPosition().x, sprite->getPosition().y, sprite->getContentSize().width, sprite->getContentSize().height))
 	}
 	//该文件存放一些处理用的函数
 	/**
 	* 获取缩放到看见size大小
 	*/
-	static void setScaleVisiableSize(cocos2d::Sprite* sprite)
+	static void setScaleVisiableSize(cocos2d::Node* sprite)
 	{
 		setScaleRatio(1, 1, sprite->getContentSize(), sprite);
 	}
+
+	
+
 	/**
 	* 进行缩放,对精灵进行12格缩放并且设置位置
 	*	0-11
 	*	改变锚点的位置
 	*/
-	static void get12RectByIndex(int index, cocos2d::Sprite* sprite)
+	static void get12RectByIndex(int index, cocos2d::Node* sprite)
 	{
 		sprite->setAnchorPoint(cocos2d::Vec2(0, 0));
-		auto rect = VisibleRect::Rect12ByIndex(index);
+		auto rect = VisibleRect::rect12ByIndex(index);
+		
+		setNodePostionScale(sprite, rect);
+	}
+	/**
+	 * 将节点设置为特定位置,并且进行一个缩放
+	 */
+	static void setNodePostionInScreen(cocos2d::Node* sprite, int row, cocos2d::Vec2 vec, int weightScaleToPadding,
+		int heightScaleToPadding, int column)
+	{
+		auto rect = VisibleRect::splitScreenAsRect( row, vec, weightScaleToPadding, heightScaleToPadding, column);
+		//测试
+		RECT_PRINT("获取的缩放", rect)
+		setNodePostionScale(sprite, rect);
+	}
+	//进行缩放,并设置位置
+	static void setNodePostionScale(cocos2d::Node* sprite, cocos2d::Rect rect)
+	{
+		sprite->setAnchorPoint(cocos2d::Vec2(0,0));
 		sprite->setPosition(rect.origin.x, rect.origin.y);
 		setScaleRatio(1, 1, sprite->getContentSize(), sprite, rect.size.width, rect.size.height);
 	}
+	//--------------------------------------io处理----------------------------------------
 	/**
 	* 通过读取json文件获取当前用户拥有的数据
 	*/
@@ -141,6 +168,7 @@ public:
 		}
 		return vector;
 	}
+	//-------------------------------------------------------------算法--------------------------------------------
 	//产生一个范围随机数 0---ran-1
 	static int getRandom(int ran)
 	{

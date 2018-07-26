@@ -43,12 +43,13 @@ void MenuSence::battle(Ref* ref)
 {
 	LoadingSence::loadSence = "battle";
 	auto ls= LoadingSence::create();
-	Director::getInstance()->replaceScene(ls);
+	Director::getInstance()->pushScene(ls);
+	
 }
 
 void MenuSence::shop(Ref* ref)
 {
 	LoadingSence::loadSence = "shop";
 	auto ls = LoadingSence::create();
-	Director::getInstance()->replaceScene(ls);
+	Director::getInstance()->pushScene(ls);
 }
