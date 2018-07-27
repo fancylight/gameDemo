@@ -158,8 +158,7 @@ void AppDelegate::applicationWillEnterForeground() {
  * 可能需要加载的数据
  *      1.精灵图片  (无论玩家是否拥有特定卡牌,都应该全部加载)
  *      2.如果是做好的游戏的那么还要根据不同用户进行加载
- *      3.关于sprite大小问题
- *			如果要适配多种设备,为了性能而考虑还是要准备不同大小的图 plist,减少程序中缩放的损耗,我暂时就不处理了每个精灵init 函数前都要进行一次缩放
+ *      3.将config.json中数据作为当前玩家拥有的精灵,再创建这些精灵,根据isField属性加入到UserData中battaleVector中
  */
 void AppDelegate::initData() {
     auto spriteCache=SpriteFrameCache::getInstance();

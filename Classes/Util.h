@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include "VisibleRect.h"
 #include "marco.h"
+#include "Particle3D/PU/CCPUSineForceAffector.h"
 
 
 class Util
@@ -35,17 +36,21 @@ public:
 		float xScale = width0 / oSize.width;
 		float yScale = height0 / oSize.height;
 		sprite->setScale(xScale, yScale);
-		RECT_PRINT("精灵缩放后", cocos2d::Rect(sprite->getPosition().x, sprite->getPosition().y, sprite->getContentSize().width, sprite->getContentSize().height))
+		// RECT_PRINT("精灵缩放后", cocos2d::Rect(sprite->getPosition().x, sprite->getPosition().y, sprite->getContentSize().width, sprite->getContentSize().height))
 	}
-	//该文件存放一些处理用的函数
 	/**
-	* 获取缩放到看见size大小
+	 * 缩放至全屏
+	*  @filePath 文件名称
+	*  @scene 场景
 	*/
-	static void setScaleVisiableSize(cocos2d::Node* sprite)
+	static void setBackGround(std::string filePath, cocos2d::Scene* sence, int zOrder = 0)
 	{
-		setScaleRatio(1, 1, sprite->getContentSize(), sprite);
+		auto back = cocos2d::Sprite::create(filePath);
+		//首先拉伸或者缩放背景	
+		setScaleRatio(1, 1, back->getContentSize(), back);
+		back->setPosition(VisibleRect::center());
+		sence->addChild(back, 0);
 	}
-
 	
 
 	/**
@@ -68,16 +73,27 @@ public:
 	{
 		auto rect = VisibleRect::splitScreenAsRect( row, vec, weightScaleToPadding, heightScaleToPadding, column);
 		//测试
-		RECT_PRINT("获取的缩放", rect)
+		// RECT_PRINT("获取的缩放", rect)
+		setNodePostionScale(sprite, rect);
+	}
+	/**
+	 * 跟上边函数相对比这是一个相对矩形
+	 */
+	static void setNodePostionInRect(cocos2d::Node* sprite, int row, cocos2d::Vec2 vec, int weightScaleToPadding,
+		int heightScaleToPadding, int column, cocos2d::Size size)
+	{
+		auto rect=VisibleRect::splitScreenAsRect(row, vec, weightScaleToPadding, heightScaleToPadding, column,size.width,size.height);
 		setNodePostionScale(sprite, rect);
 	}
 	//进行缩放,并设置位置
+private:
 	static void setNodePostionScale(cocos2d::Node* sprite, cocos2d::Rect rect)
 	{
 		sprite->setAnchorPoint(cocos2d::Vec2(0,0));
 		sprite->setPosition(rect.origin.x, rect.origin.y);
 		setScaleRatio(1, 1, sprite->getContentSize(), sprite, rect.size.width, rect.size.height);
 	}
+public:
 	//--------------------------------------io处理----------------------------------------
 	/**
 	* 通过读取json文件获取当前用户拥有的数据
@@ -175,17 +191,14 @@ public:
 		srand(static_cast<unsigned int>(time(0))); // 设置随机数种子
 		return rand() % ran;
 	}
-	/**
-	 *  @filePath 文件名称
-	 *  @scene 场景
-	 */
-	static void setBackGround(std::string filePath, cocos2d::Scene* sence,int zOrder=0)
+	//简单的概率机制 0-100
+	static bool getProbability(int rate)
 	{
-		auto back = cocos2d::Sprite::create(filePath);
-		//首先拉伸或者缩放背景	
-		Util::setScaleVisiableSize(back);
-		back->setPosition(VisibleRect::center());
-		sence->addChild(back,0);
+		if (rate == 0)
+			return false;
+		srand(static_cast<unsigned int>(time(0))); // 设置随机数种子
+		const int result = (rand() % 100)+1; //1-100
+		return 0 < result <= rate;
 	}
 };
 #endif TEMPLATECPP_UTIL_h

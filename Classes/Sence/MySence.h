@@ -7,10 +7,10 @@
 
 
 #include <cocos/2d/CCScene.h>
-
 class MySence: public cocos2d::Scene {
 public:
     CREATE_FUNC(MySence)
+
 };
 
 

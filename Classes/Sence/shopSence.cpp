@@ -11,6 +11,7 @@
 #include "../Sprite/MySprite.h"
 #include "Util.h"
 #include "Data/UserData.h"
+
 USING_NS_CC;
 
 //  1.初次创建精灵并且添加缓存中
@@ -27,6 +28,7 @@ bool ShopSence::init() {
 	menu->setPosition(Vec2::ZERO);
     addChild(menu,1,"randomMenu");
 	addChild(mySprite, 1);
+	
     return true;
 }
 /**
@@ -46,12 +48,11 @@ bool ShopSence::randomCharacter(Ref *pSender) {
         {
 			mySprite->initWithSpriteFrame(frame);
 			Util::setScaleRatio(0.25, 0.5, mySprite->getContentSize(), mySprite);
-			mySprite->runAction(Sequence::create(ScaleTo::create(1, 0.5),CallFunc::create(CC_CALLBACK_0(ShopSence::setNextBuy,this)),NULL));
+			mySprite->runAction(Sequence::create(ScaleTo::create(1, 0.5), CallFunc::create(CC_CALLBACK_0(ShopSence::setNextBuy, this)), NULL));
         }
         else if(frame==NULL)
         {
 			std::cout << name<<"  frame is invalid";
-			
         }
 		animation = true;
     }

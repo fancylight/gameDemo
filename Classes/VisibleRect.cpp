@@ -172,30 +172,38 @@ Rect VisibleRect::rect12ByIndex(int index)
  *	@sum 表示要分的范围总数
  *	@index 表示位置从0开始
  *	@length 表示要分的大小
- *	@ScaleToPadding 表示元素:间距
+ *	@ScaleToPadding 表示元素:间距]
+ *	当比例为0表示打算独占
  */
 cocos2d::Vec2 VisibleRect::splitBySum(int sum, int index, float length, int ScaleToPadding=2)
 {
 	lazyInit();
-	auto visualWidth = length;
-	auto lenth0 = visualWidth / (sum+1+sum* ScaleToPadding);
-	auto postion = ((index%sum) + 1)*lenth0 + (index%sum)*lenth0*ScaleToPadding;
-	return Vec2(postion, lenth0*ScaleToPadding);
+	if(ScaleToPadding!=0)
+	{
+		auto visualWidth = length;
+		auto lenth0 = visualWidth / (sum + 1 + sum * ScaleToPadding);
+		auto postion = ((index%sum) + 1)*lenth0 + (index%sum)*lenth0*ScaleToPadding;
+		return Vec2(postion, lenth0*ScaleToPadding);
+	}
+	else
+	{
+		return Vec2(0, length);
+	}
 }
 
 /**
- * 将屏幕分成row*column份
+ * 将矩形分成row*column份
  *	@row 
  *	@colum
  *	@vec 表示元素分解后所在第几个矩形位置
  *	@weightScaleToPadding 表示元素宽:宽间距 默认为2
  *	@heightScaleToPadding 表示元素高:高间距 默认为3
  */
-cocos2d::Rect VisibleRect::splitScreenAsRect(int row, cocos2d::Vec2 vec, int weightScaleToPadding=2,
-	int heightScaleToPadding=3, int column=10)
+cocos2d::Rect VisibleRect::splitScreenAsRect(int row, cocos2d::Vec2 vec, int weightScaleToPadding,
+	int heightScaleToPadding, int column,float witdhAll,float heightAll)
 {
 	lazyInit();
-	cocos2d::Vec2 vecX = splitBySum(row, vec.x, s_visibleRect.size.width, weightScaleToPadding);
-	cocos2d::Vec2 vecY = splitBySum(column, vec.y, s_visibleRect.size.height, heightScaleToPadding);
+	cocos2d::Vec2 vecX = splitBySum(row, vec.x, witdhAll, weightScaleToPadding);
+	cocos2d::Vec2 vecY = splitBySum(column, vec.y, heightAll, heightScaleToPadding);
 	return cocos2d::Rect(vecX.x, vecY.x, vecX.y, vecY.y);
 }
