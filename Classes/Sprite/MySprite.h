@@ -11,6 +11,8 @@
 #include "2d/CCActionInterval.h"
 #include <ostream>
 #include "2d/CCProgressTimer.h"
+#include <iostream>
+#include "2d/CCLabel.h"
 
 USING_NS_CC;
 /**
@@ -148,9 +150,6 @@ public:
     CREATE_FUNC(MySprite)
 
 	MySprite() = default;
-	MySprite(MySprite &&sprite)
-	{
-	}
 
 	MySprite(const baseValue& base, const change& sprite_change, const status& status_sprite)
 		: base(base),
@@ -158,7 +157,6 @@ public:
 		  statusSprite(status_sprite)
 	{
 	}
-
 	bool isFullMona();
 
 private:
@@ -174,25 +172,36 @@ private:
 	int postion = -1; //表示场上位置,默认为-1
 	bool isField = false; //表示该卡牌是否在上阵中
 	std::string effectPicPath;//特效图片位置
-
-
-	
 public:
 	//--------------------------------精灵效果函数-------------------------------------------
-	//这些效果函数推荐由battle的uiShowAndDataClean函数调用
-	//添加血条,这两个函数可以交给精灵自己调用,可以交由Battle调用
+	//1.这些效果函数推荐由battle的uiShowAndDataClean函数调用
+	//2.添加血条,这两个函数可以交给精灵自己调用,可以交由Battle调用
+	//3.这些效果图,可以构造时创建,默认设置为不可见,或者延后创建
+	//4.有一个问题是,如果精灵效果动画时间过长,那么此动画也要去影响battle.isAnimation,否则必然不正确
+	/**
+	 *  显示血条的逻辑:
+	 *		精灵上场血条永远显示,当精灵死亡,其本身被设置为不可见,复活时还原所有属性
+	 *	怒气显示
+	 *		怒气=0时,不显示,怒气>4时显示为 怒气X 数量
+	 *	伤害显示
+	 *				
+	 */
 	ProgressTimer * progressTimer;
 	void addHpUi();
 	void removeHpUi();
 	void setHp(float rate);
 	//同理我们可以创建精灵的怒气,以及伤害显示
-
+	Label* damageLbael; //伤害显示
+	void showDamage(ActionInterval* sqClone);	//该函数要交给battle进行,创建action的copy,使得血量显示同时进行
+	void addDamageLabel(TTFConfig&config);	//该函数应该创建的时候调用
 	//通过此函数创建不同的精灵对象,由该函数创建出来的精灵数量是有限的,并且不应该被析构,也就是创建出来之后调用器retain()函数
 	static MySprite* createByName(std::string spriteName);
+	bool isSpriteUiAinamation; //这变量在battle中要遍历检测,当任意精灵次变量为true,都不能进行下一个回合,目前showDamage会影响该变量
 	//------------------------------精灵状态判断以及相关设置--------------------------------------------
 	bool isDead() const
 	{
 		return statusSprite.isDead;
+
 	};
 	void setDead(bool dead) 
 	{
@@ -230,7 +239,8 @@ public:
 	virtual void specialAttackEffect(BattleSence* battle, MySprite* targetSprite){}; //特击特效
 	virtual void damagedEffect(BattleSence* battle){};     //被攻击特效
 	//
-
+	//---------------------------------回调函数-----------------------------------------------
+	void setDamagVisible() { damageLbael->setVisible(false); }
 	friend std::ostream& operator<<(std::ostream& os, const MySprite& obj)
 	{
 		return os

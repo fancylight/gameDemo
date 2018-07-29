@@ -18,5 +18,6 @@ public:
 	void battle(Ref* ref);
 	//ил╣Й
 	void shop(Ref* ref);
+	void test(Ref* ref);
 };
 

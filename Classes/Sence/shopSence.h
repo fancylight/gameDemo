@@ -22,6 +22,7 @@ private:
     bool animation=false;//true表示动画进行
     std::string randonName();//随机产生一个精灵的名字
 	void setNextBuy();
+	void backMenu(Ref* ref);
 };
 
 

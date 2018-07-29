@@ -28,7 +28,7 @@ bool BattleSence::init()
 	//
 	maxEnemySneerSprite = enemySprites[0];
 	maxFriendSneerSprite = friendSprites[0];
-	Scene::init();
+	// Scene::init();
 
 	return true;
 }
@@ -93,7 +93,6 @@ void BattleSence::uiShowAndDataClean()
 	{
 		float prctance = sprite->get_base().healthy / sprite->get_base().allHealthy;
 		//
-
 		sprite->setHp(prctance*100);
 		if(sprite->isDead())
 		{
@@ -119,7 +118,7 @@ void BattleSence::uiShowAndDataClean()
 	}
 	//将此次攻击的选手置为0位置
 	Sprites.insert(Sprites.begin(),runningSprite);
-	isAnimation = false;
+	isAnimation = false;  //这个设置应该要延迟到伤害显示动画...复活懂结算动画处理结束再改变
 	// std::cout << "攻击手数量" << Sprites.size();
 }
 

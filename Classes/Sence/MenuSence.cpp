@@ -4,6 +4,7 @@
 #include "shopSence.h"
 #include "Util.h"
 #include "LoadingSence.h"
+#include "proj.win32/TestScene.h"
 
 
 USING_NS_CC;
@@ -24,14 +25,14 @@ bool MenuSence::init()
 	//创建一个菜单
 	auto item = MenuItemImage::create("CloseNormal.png", "CloseSelected.png",
 		CC_CALLBACK_1(MenuSence::battle, this));
-	
-
 	auto item2 = MenuItemImage::create("CloseNormal.png", "CloseSelected.png",
 		CC_CALLBACK_1(MenuSence::shop, this));
-
-	item->setPosition(VisibleRect::top());
-	item2->setPosition(VisibleRect::center());
-	auto menu = Menu::create(item, item2,nullptr);
+	auto item3= MenuItemImage::create("CloseNormal.png", "CloseSelected.png",
+		CC_CALLBACK_1(MenuSence::test, this));
+	Util::setNodePostionInScreen(item, 5, Vec2(0, 0), 3, 5, 10);
+	Util::setNodePostionInScreen(item2, 5, Vec2(1, 0), 3, 5, 10);
+	Util::setNodePostionInScreen(item3, 5, Vec2(2, 0), 3, 5, 10);
+	auto menu = Menu::create(item,item2,item3,  nullptr);
 	menu->setPosition(Vec2::ZERO);
 	//设置背景
 	Util::setBackGround("background/menu.jpg", this);
@@ -52,4 +53,9 @@ void MenuSence::shop(Ref* ref)
 	LoadingSence::loadSence = "shop";
 	auto ls = LoadingSence::create();
 	Director::getInstance()->pushScene(ls);
+}
+
+void MenuSence::test(Ref* ref)
+{
+	Director::getInstance()->pushScene(TestScene::create());
 }

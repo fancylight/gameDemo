@@ -35,65 +35,76 @@ void VisibleRect::lazyInit()
     // no lazy init
     // Useful if we change the resolution in runtime
     s_visibleRect = Director::getInstance()->getOpenGLView()->getVisibleRect();
+	isInit = true;
 }
 
 Rect VisibleRect::getVisibleRect()
 {
+	if(!isInit)
     lazyInit();
     return s_visibleRect;
 }
 
 Vec2 VisibleRect::left()
 {
-    lazyInit();
+	if (!isInit)
+		lazyInit();
     return Vec2(s_visibleRect.origin.x, s_visibleRect.origin.y+s_visibleRect.size.height/2);
 }
 
 Vec2 VisibleRect::right()
 {
-    lazyInit();
+	if (!isInit)
+		lazyInit();
     return Vec2(s_visibleRect.origin.x+s_visibleRect.size.width, s_visibleRect.origin.y+s_visibleRect.size.height/2);
 }
 
 Vec2 VisibleRect::top()
 {
-    lazyInit();
+	if (!isInit)
+		lazyInit();
     return Vec2(s_visibleRect.origin.x+s_visibleRect.size.width/2, s_visibleRect.origin.y+s_visibleRect.size.height);
 }
 
 Vec2 VisibleRect::bottom()
 {
-    lazyInit();
+	if (!isInit)
+		lazyInit();
     return Vec2(s_visibleRect.origin.x+s_visibleRect.size.width/2, s_visibleRect.origin.y);
 }
 
 Vec2 VisibleRect::center()
 {
-    lazyInit();
+	if (!isInit)
+		lazyInit();
     return Vec2(s_visibleRect.origin.x+s_visibleRect.size.width/2, s_visibleRect.origin.y+s_visibleRect.size.height/2);
 }
 
 Vec2 VisibleRect::leftTop()
 {
-    lazyInit();
+	if (!isInit)
+		lazyInit();
     return Vec2(s_visibleRect.origin.x, s_visibleRect.origin.y+s_visibleRect.size.height);
 }
 
 Vec2 VisibleRect::rightTop()
 {
-    lazyInit();
+	if (!isInit)
+		lazyInit();
     return Vec2(s_visibleRect.origin.x+s_visibleRect.size.width, s_visibleRect.origin.y+s_visibleRect.size.height);
 }
 
 Vec2 VisibleRect::leftBottom()
 {
-    lazyInit();
+	if (!isInit)
+		lazyInit();
     return s_visibleRect.origin;
 }
 
 Vec2 VisibleRect::rightBottom()
 {
-    lazyInit();
+	if (!isInit)
+		lazyInit();
     return Vec2(s_visibleRect.origin.x+s_visibleRect.size.width, s_visibleRect.origin.y);
 }
 /*
@@ -132,7 +143,8 @@ Vec2 VisibleRect::rightBottom()
  */
 Rect VisibleRect::rect12ByIndex(int index)
 {
-	lazyInit();
+	if (!isInit)
+		lazyInit();
 	int sumHeightNumber = 3;	//表示将屏幕高分为几分
 	int weightScaleToPadding = 2;  //表示卡片是间隔倍数
 	int heightScaleToPadding = 3;  //表示卡片是间隔倍数
@@ -177,7 +189,8 @@ Rect VisibleRect::rect12ByIndex(int index)
  */
 cocos2d::Vec2 VisibleRect::splitBySum(int sum, int index, float length, int ScaleToPadding=2)
 {
-	lazyInit();
+	if (!isInit)
+		lazyInit();
 	if(ScaleToPadding!=0)
 	{
 		auto visualWidth = length;
@@ -199,11 +212,15 @@ cocos2d::Vec2 VisibleRect::splitBySum(int sum, int index, float length, int Scal
  *	@weightScaleToPadding 表示元素宽:宽间距 默认为2
  *	@heightScaleToPadding 表示元素高:高间距 默认为3
  */
-cocos2d::Rect VisibleRect::splitScreenAsRect(int row, cocos2d::Vec2 vec, int weightScaleToPadding,
-	int heightScaleToPadding, int column,float witdhAll,float heightAll)
+cocos2d::Rect VisibleRect::splitScreenAsRect(int row, cocos2d::Vec2 vec, int weightScaleToPadding ,
+	int heightScaleToPadding , int column , float witdhAll, float heightAll)
 {
-	lazyInit();
+	if (!isInit)
+		lazyInit();
+
 	cocos2d::Vec2 vecX = splitBySum(row, vec.x, witdhAll, weightScaleToPadding);
 	cocos2d::Vec2 vecY = splitBySum(column, vec.y, heightAll, heightScaleToPadding);
 	return cocos2d::Rect(vecX.x, vecY.x, vecX.y, vecY.y);
 }
+
+bool VisibleRect::isInit = false;

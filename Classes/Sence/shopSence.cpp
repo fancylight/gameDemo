@@ -22,9 +22,12 @@ bool ShopSence::init() {
 	mySprite->setPosition(VisibleRect::center());
     //创建一个菜单
     auto item= MenuItemImage::create("CloseNormal.png", "CloseSelected.png",
-                                     CC_CALLBACK_1(ShopSence::randomCharacter, this));
+                                     CC_CALLBACK_1(ShopSence::randomCharacter, this));		//抽卡按键
 	Util::setNodePostionInScreen(item, 5, Vec2(0, 0), 3, 5, 10);
-	auto menu=Menu::create(item, nullptr);
+	auto item2 = MenuItemImage::create("CloseNormal.png", "CloseSelected.png",
+		CC_CALLBACK_1(ShopSence::backMenu, this));
+	Util::setNodePostionInScreen(item2, 5, Vec2(1, 0), 3, 5, 10);
+	auto menu=Menu::create(item,item2, nullptr);
 	menu->setPosition(Vec2::ZERO);
     addChild(menu,1,"randomMenu");
 	addChild(mySprite, 1);
@@ -71,4 +74,10 @@ std::string ShopSence::randonName() {
 void ShopSence::setNextBuy()
 {
 	animation = false;
+}
+
+void ShopSence::backMenu(Ref* ref)
+{
+	if (!animation)
+	Director::getInstance()->popToRootScene();
 }

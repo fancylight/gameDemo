@@ -73,7 +73,7 @@ public:
 	{
 		auto rect = VisibleRect::splitScreenAsRect( row, vec, weightScaleToPadding, heightScaleToPadding, column);
 		//测试
-		// RECT_PRINT("获取的缩放", rect)
+		RECT_PRINT("获取的缩放", rect)
 		setNodePostionScale(sprite, rect);
 	}
 	/**
@@ -192,13 +192,16 @@ public:
 		return rand() % ran;
 	}
 	//简单的概率机制 0-100
+	/**
+	 * 首先这个算法是完全不科学的,原因在于rand函数时算法实现的,如果时间种子较为密集,那么该函数产生的随机数 是从0-99-0-99的趋势,
+	 */
 	static bool getProbability(int rate)
 	{
 		if (rate == 0)
 			return false;
 		srand(static_cast<unsigned int>(time(0))); // 设置随机数种子
 		const int result = (rand() % 100)+1; //1-100
-		return 0 < result <= rate;
+		return 0<result&&result<rate;
 	}
 };
 #endif TEMPLATECPP_UTIL_h
