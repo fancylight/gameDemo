@@ -20,7 +20,6 @@ void MySprite::attackCalc(AttackType type, BattleSence* battle)
 {
 	int attackNumber = 0;
 	int attack = 0;
-	std::vector<MySprite*>temp_sprites; //对被攻击的选手显示一次伤害
 	if (type == NORMAL)
 	{
 		attackNumber = base.normalAttackCount;
@@ -39,14 +38,14 @@ void MySprite::attackCalc(AttackType type, BattleSence* battle)
 			if (Util::getProbability(base.citRate))
 				attack = attack * base.citRateValue;
 			MySprite* enemy;
-			if (get_postion() < 5)
+			if (get_postion() <= 5)
 				enemy = battle->maxEnemySneerSprite;
 			else
 				enemy = battle->maxFriendSneerSprite;
 			//攻击,基础模板就从敌人中寻找对象,如果要技能影响,我们后期要改变此处的代码
 			enemy->base.healthy -= attack;
 			//
-			temp_sprites.push_back(enemy);
+			battle->SpritesDamage.push_back(enemy);
 			std::cout << "号码" << enemy->get_postion() << "被攻击" << std::endl;
 			std::cout << "号码" << enemy->get_postion() << "生命值" << enemy->get_base().healthy << std::endl;
 			enemy->spriteChange.changeHealthy = -attack;
@@ -65,6 +64,10 @@ void MySprite::attackCalc(AttackType type, BattleSence* battle)
 			if (enemy->base.healthy <= 0)
 				enemy->setDead(true);
 		}
+		else
+		{
+			std::cout << "闪避" << std::endl;
+		}
 		//2.治疗 默认加血模式为最少生命值治疗
 			//1.有其他加血模式	2.该单位是否可以加血
 		if (statusSprite.isCureUnit)
@@ -76,21 +79,19 @@ void MySprite::attackCalc(AttackType type, BattleSence* battle)
 				if (sprite->base.healthy > sprite->base.allHealthy)
 					sprite->base.healthy = sprite->base.allHealthy;
 				sprite->spriteChange.changeHealthy = attack;
-				temp_sprites.push_back(sprite);
+				battle->SpritesDamage.push_back(sprite);
 			}
-		}
-		//3.在这个显示伤害效果
-		
-		for (auto s : temp_sprites)
-		{
-			if (s->damageLbael == nullptr)
-				s->addDamageLabel(TTFConfig("fonts/Marker Felt.ttf"));
-			auto se = Sequence::create(MoveBy::create(0.5, Vec2(0, 5)), CallFunc::create(CC_CALLBACK_0(MySprite::setDamagVisible, s)),NULL);
-			
-			s->showDamage(se->clone());
 		}
 	}
 	
+	
+}
+
+void MySprite::setDamagInvisible()
+{
+	damageLbael->setVisible(false); 
+	// get_status_sprite().isAnimation = false; 
+	g_battle->damageNumber--;
 	
 }
 
@@ -153,10 +154,9 @@ void MySprite::setHp(float rate)
  */
 void MySprite::showDamage(ActionInterval* sqClone)
 {
-	std::cout << "显示了一次伤害";
+	get_status_sprite().isAnimation = true;
 	damageLbael->setVisible(true);
 	if (get_sprite_change().changeHealthy !=0)
-		//默认为红色
 	{
 		if(get_sprite_change().changeHealthy < 0)
 		damageLbael->setColor(Color3B::RED);
@@ -164,7 +164,7 @@ void MySprite::showDamage(ActionInterval* sqClone)
 		damageLbael->setColor(Color3B::GREEN);
 		//
 		damageLbael->setString(std::to_string(get_sprite_change().changeHealthy));
-		//设置一个动画,并且当动画结束后将
+		//设置一个动画,并且当动画结束后将执行回调
 		damageLbael->runAction(sqClone);
 	}
 		

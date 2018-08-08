@@ -52,7 +52,7 @@ void LoadingSence::loadBattleData()
 	for(int index=0;index<6;index++)
 	{
 		auto s = MySprite::create();
-		s->initWithSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("Nima1.png"));
+		s->initWithSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("NimaB1.png"));
 		s->setMustNumber(baseValue(1000, 0, 50, 110, 15, 1, 1, 1.5, 1.3, 10, 10), index);
 		s->retain();
 		s->addHpUi();
@@ -63,7 +63,7 @@ void LoadingSence::loadBattleData()
 	{
 		auto s = MySprite::create();
 		s->setMustNumber(baseValue(1000, 0, 50, 110, 15, 1, 1, 1.5, 1.3, 10, 10), index);
-		s->initWithSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("Nima1.png"));
+		s->initWithSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("NimaB1.png"));
 		s->retain();
 		s->addHpUi();
 		v2.push_back(s);

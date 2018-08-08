@@ -73,16 +73,17 @@ public:
 	{
 		auto rect = VisibleRect::splitScreenAsRect( row, vec, weightScaleToPadding, heightScaleToPadding, column);
 		//测试
-		RECT_PRINT("获取的缩放", rect)
+		// RECT_PRINT("获取的缩放", rect)
 		setNodePostionScale(sprite, rect);
 	}
 	/**
 	 * 跟上边函数相对比这是一个相对矩形
 	 */
 	static void setNodePostionInRect(cocos2d::Node* sprite, int row, cocos2d::Vec2 vec, int weightScaleToPadding,
-		int heightScaleToPadding, int column, cocos2d::Size size)
+		int heightScaleToPadding, int column, cocos2d::Size size,int nextXIndex=0,int nextYindex=0)
 	{
-		auto rect=VisibleRect::splitScreenAsRect(row, vec, weightScaleToPadding, heightScaleToPadding, column,size.width,size.height);
+		auto rect=VisibleRect::splitScreenAsRect(row, vec, weightScaleToPadding, heightScaleToPadding, column, nextXIndex, nextYindex,size.width,size.height);
+		// RECT_PRINT("获取的缩放InRect", rect)
 		setNodePostionScale(sprite, rect);
 	}
 	//进行缩放,并设置位置

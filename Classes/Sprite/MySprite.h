@@ -51,6 +51,7 @@ struct status //关于本单位的一些状态
 	bool isBanHeal;
 	bool isCureUnit;
 	bool isDead;
+	bool isAnimation=false;  //该变量用来检测多对1回调的动画
 	friend std::ostream& operator<<(std::ostream& os, const status& obj)
 	{
 		return os
@@ -172,7 +173,10 @@ private:
 	int postion = -1; //表示场上位置,默认为-1
 	bool isField = false; //表示该卡牌是否在上阵中
 	std::string effectPicPath;//特效图片位置
+	
 public:
+	//---------------------------------临时加上的------------------------------------------
+	BattleSence * g_battle;
 	//--------------------------------精灵效果函数-------------------------------------------
 	//1.这些效果函数推荐由battle的uiShowAndDataClean函数调用
 	//2.添加血条,这两个函数可以交给精灵自己调用,可以交由Battle调用
@@ -240,7 +244,8 @@ public:
 	virtual void damagedEffect(BattleSence* battle){};     //被攻击特效
 	//
 	//---------------------------------回调函数-----------------------------------------------
-	void setDamagVisible() { damageLbael->setVisible(false); }
+	void setDamagInvisible();
+	//---------------------------------stream-------------------------------------------------
 	friend std::ostream& operator<<(std::ostream& os, const MySprite& obj)
 	{
 		return os

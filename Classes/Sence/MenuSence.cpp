@@ -5,6 +5,7 @@
 #include "Util.h"
 #include "LoadingSence.h"
 #include "proj.win32/TestScene.h"
+#include "Battle.h"
 
 
 USING_NS_CC;
@@ -58,4 +59,14 @@ void MenuSence::shop(Ref* ref)
 void MenuSence::test(Ref* ref)
 {
 	Director::getInstance()->pushScene(TestScene::create());
+}
+
+void MenuSence::onEnter()
+{
+		for (auto s : BattleSence::Sprites)
+		{
+			std::cout << s << std::endl;
+			std::cout << "Ã»ÓÐÇå³ý" << std::endl;
+		}
+		Scene::onEnter();
 }

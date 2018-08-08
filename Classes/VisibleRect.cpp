@@ -146,8 +146,8 @@ Rect VisibleRect::rect12ByIndex(int index)
 	if (!isInit)
 		lazyInit();
 	int sumHeightNumber = 3;	//表示将屏幕高分为几分
-	int weightScaleToPadding = 2;  //表示卡片是间隔倍数
-	int heightScaleToPadding = 3;  //表示卡片是间隔倍数
+	int weightScaleToPadding = 4;  //表示卡片是间隔倍数
+	int heightScaleToPadding = 7;  //表示卡片是间隔倍数
 
 	auto visualWidth= s_visibleRect.size.width;
 	auto visualHeight = s_visibleRect.size.height;
@@ -171,8 +171,8 @@ Rect VisibleRect::rect12ByIndex(int index)
 	// if (index > 5)
 	// 	y += (visualHeight- height0);
 	// return Rect(x, y, vecCard.x, vecCard.y);
-	cocos2d::Vec2 vX = splitBySum(3, index, visualWidth, weightScaleToPadding);
-	cocos2d::Vec2 vY = splitBySum(2, index, height0, heightScaleToPadding);
+	cocos2d::Vec2 vX = splitBySum(3, index, visualWidth, weightScaleToPadding,0);
+	cocos2d::Vec2 vY = splitBySum(2, index, height0, heightScaleToPadding,0);
 	if (index > 5)
 		vY.x = vY.x + (visualHeight - height0);
 	return Rect(vX.x, vY.x, vX.y, vY.y);
@@ -184,10 +184,14 @@ Rect VisibleRect::rect12ByIndex(int index)
  *	@sum 表示要分的范围总数
  *	@index 表示位置从0开始
  *	@length 表示要分的大小
- *	@ScaleToPadding 表示元素:间距]
+ *	@ScaleToPadding 表示元素:间距
+ *	@nextIndex 表示该元素从index-nextIndex是其真正站的长度
+ *	
  *	当比例为0表示打算独占
+ *	当nextIndex为0,表示该元素只占一份
+ *	当index=0 nextIndex=sum,其效果和ScaleToPadding=0相同
  */
-cocos2d::Vec2 VisibleRect::splitBySum(int sum, int index, float length, int ScaleToPadding=2)
+cocos2d::Vec2 VisibleRect::splitBySum(int sum, int index, float length, int ScaleToPadding,int  nextIndex)
 {
 	if (!isInit)
 		lazyInit();
@@ -196,7 +200,7 @@ cocos2d::Vec2 VisibleRect::splitBySum(int sum, int index, float length, int Scal
 		auto visualWidth = length;
 		auto lenth0 = visualWidth / (sum + 1 + sum * ScaleToPadding);
 		auto postion = ((index%sum) + 1)*lenth0 + (index%sum)*lenth0*ScaleToPadding;
-		return Vec2(postion, lenth0*ScaleToPadding);
+		return Vec2(postion, lenth0*ScaleToPadding+ nextIndex * (lenth0*(ScaleToPadding + 1)));
 	}
 	else
 	{
@@ -213,13 +217,13 @@ cocos2d::Vec2 VisibleRect::splitBySum(int sum, int index, float length, int Scal
  *	@heightScaleToPadding 表示元素高:高间距 默认为3
  */
 cocos2d::Rect VisibleRect::splitScreenAsRect(int row, cocos2d::Vec2 vec, int weightScaleToPadding ,
-	int heightScaleToPadding , int column , float witdhAll, float heightAll)
+	int heightScaleToPadding , int column ,  int nextXIndex, int nextYIndex ,float witdhAll, float heightAll)
 {
 	if (!isInit)
 		lazyInit();
 
-	cocos2d::Vec2 vecX = splitBySum(row, vec.x, witdhAll, weightScaleToPadding);
-	cocos2d::Vec2 vecY = splitBySum(column, vec.y, heightAll, heightScaleToPadding);
+	cocos2d::Vec2 vecX = splitBySum(row, vec.x, witdhAll, weightScaleToPadding, nextXIndex);
+	cocos2d::Vec2 vecY = splitBySum(column, vec.y, heightAll, heightScaleToPadding, nextYIndex);
 	return cocos2d::Rect(vecX.x, vecY.x, vecX.y, vecY.y);
 }
 
